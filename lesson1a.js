@@ -54,3 +54,70 @@ document.querySelector("#close").addEventListener
   document.querySelector(".popup").style.display="none";
 })
 
+
+document.addEventListener('DOMContentLoaded', () => {
+    const draggableElements = document.querySelectorAll('.draggable');
+    const dropZones = document.querySelectorAll('.dropzone');
+    const submitButton = document.getElementById('submit');
+    const charDropZone = document.getElementById('dropZone2');
+    const intDropZone = document.getElementById('dropZone3');
+
+    draggableElements.forEach(elem => {
+        elem.addEventListener('dragstart', handleDragStart);
+    });
+
+    dropZones.forEach(zone => {
+        zone.addEventListener('dragover', handleDragOver);
+        zone.addEventListener('drop', handleDrop);
+    });
+
+    submitButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        if (checkAnswers()) {
+            window.location.href = 'congrats.html';
+        } else {
+            window.location.href = 'wrong.html';
+        }
+    });
+
+    function handleDragStart(event) {
+        event.dataTransfer.setData('text', event.target.id);
+    }
+
+    function handleDragOver(event) {
+        event.preventDefault();
+    }
+
+    function handleDrop(event) {
+        event.preventDefault();
+        const data = event.dataTransfer.getData('text');
+        const draggedElement = document.getElementById(data);
+        if (event.target.classList.contains('dropzone')) {
+            event.target.appendChild(draggedElement);
+        }
+    }
+
+    function checkAnswers() {
+        const intElements = intDropZone.querySelectorAll('.draggable');
+        const charElements = charDropZone.querySelectorAll('.draggable');
+        
+        let correct = true;
+        
+        intElements.forEach(elem => {
+            const imgSrc = elem.querySelector('img').src;
+            if (!imgSrc.includes('num')) {
+                correct = false;
+            }
+        });
+
+        charElements.forEach(elem => {
+            const imgSrc = elem.querySelector('img').src;
+            if (!imgSrc.includes('A') && !imgSrc.includes('B') && !imgSrc.includes('C') && !imgSrc.includes('D') && !imgSrc.includes('E')) {
+                correct = false;
+            }
+        });
+
+        return correct;
+    }
+});
+
